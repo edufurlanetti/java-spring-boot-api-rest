@@ -1,0 +1,52 @@
+spring:
+  application:
+    name: manutencao-api
+
+  # Perfil padrão: banco H2 em memória (não precisa instalar nada)
+  datasource:
+    url: jdbc:h2:mem:manutencao;DB_CLOSE_DELAY=-1
+    username: sa
+    password:
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    open-in-view: false            # boa prática: o acesso ao banco termina na camada de serviço
+    defer-datasource-initialization: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  sql:
+    init:
+      mode: always                 # executa o data.sql com os dados de exemplo
+
+  h2:
+    console:
+      enabled: true                # http://localhost:8080/h2-console  (JDBC URL acima)
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
+
+---
+# Perfil "postgres": suba o banco com docker compose e rode com
+#   mvn spring-boot:run -Dspring-boot.run.profiles=postgres
+spring:
+  config:
+    activate:
+      on-profile: postgres
+  datasource:
+    url: jdbc:postgresql://localhost:5432/manutencao
+    username: postgres
+    password: postgres
+  jpa:
+    hibernate:
+      ddl-auto: update
+  sql:
+    init:
+      mode: never
+  h2:
+    console:
+      enabled: false

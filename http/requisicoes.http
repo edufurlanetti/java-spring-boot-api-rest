@@ -1,0 +1,58 @@
+### Requisições de exemplo
+### Use a extensão REST Client (VS Code) ou o cliente HTTP do IntelliJ IDEA.
+@base = http://localhost:8080/api
+
+### Lista equipamentos ativos
+GET {{base}}/equipamentos
+
+### Cadastra equipamento
+POST {{base}}/equipamentos
+Content-Type: application/json
+
+{
+  "codigo": "ESTEIRA-01",
+  "nome": "Esteira transportadora",
+  "setor": "Expedição",
+  "fabricante": "Flexlink"
+}
+
+### Validação: campos obrigatórios em branco (400)
+POST {{base}}/equipamentos
+Content-Type: application/json
+
+{ "codigo": "", "nome": "", "setor": "" }
+
+### Ordens abertas e críticas, ordenadas pela abertura
+GET {{base}}/ordens?status=ABERTA&prioridade=CRITICA&sort=abertaEm,desc
+
+### Abre uma ordem
+POST {{base}}/ordens
+Content-Type: application/json
+
+{
+  "equipamentoId": 2,
+  "descricao": "Folga no carro transversal",
+  "tipo": "CORRETIVA",
+  "prioridade": "ALTA"
+}
+
+### Inicia a ordem 6
+PATCH {{base}}/ordens/6/iniciar
+Content-Type: application/json
+
+{ "tecnico": "Juliana Lopes" }
+
+### Conclui a ordem 6
+PATCH {{base}}/ordens/6/concluir
+Content-Type: application/json
+
+{ "solucao": "Guias lubrificadas e ajustadas", "horasTrabalhadas": 1.5 }
+
+### Transição inválida: concluir ordem já concluída (422)
+PATCH {{base}}/ordens/1/concluir
+Content-Type: application/json
+
+{ "solucao": "x", "horasTrabalhadas": 1 }
+
+### Indicadores
+GET {{base}}/ordens/indicadores
